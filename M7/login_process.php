@@ -1,21 +1,23 @@
 <?php
 require_once "koneksi.php";
 
-$username = $_POST['username'];
+$nama = $_POST['username']; // Ganti 'username' dengan 'nama'
 $password = $_POST['password'];
 
-$sql = "SELECT *
-        FROM user
-        WHERE username = '$username'
-        AND password = '$password'";
+// Menggunakan prepared statement untuk keamanan
+$stmt = $conn->prepare("SELECT * FROM user WHERE username = ? AND password = ?");
+$stmt->bind_param("ss", $nama, $password);
+$stmt->execute();
+$result = $stmt->get_result();
 
-$result = mysqli_query($conn, $sql);
-if (mysqli_num_rows($result) > 0) {
+if ($result->num_rows > 0) {
     session_start();
-    $data = mysqli_fetch_assoc($result);
-    $_SESSION['user'] = $data['username'];
-    $_SESSION['akses'] = $data['akses'];
+    $data = $result->fetch_assoc();
+    $_SESSION['user'] = $data['username']; // Ganti 'username' dengan 'nama'
     header("Location: read_data.php");
 } else {
     echo "Username atau Password salah";
 }
+
+$stmt->close();
+$conn->close();
