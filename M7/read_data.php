@@ -1,5 +1,14 @@
 <?php
 
+session_start();
+if(isset($_SESSION['user'])){
+    echo "Halaman tidak bisa diakses";
+    header("Location: form_login.php");
+} else {
+    echo "Selamat Datang" .$_SESSION['user']." ";
+    echo 
+}
+
 require_once("koneksi.php");
 
 $sql = "SELECT * FROM matakuliah";
